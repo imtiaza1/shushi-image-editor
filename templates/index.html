@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Shushi | Edit Your Image</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-zinc-900 text-zinc-100 min-h-screen flex flex-col">
+    <!-- Navbar -->
+    <header
+      class="w-full border-b border-zinc-700 bg-zinc-800 px-6 py-4 flex items-center justify-between"
+    >
+      <h1 class="text-xl font-bold text-green-500">Shushi</h1>
+      <span class="text-sm text-zinc-400">Edit Your Image</span>
+    </header>
+
+    <!-- Main -->
+    <main class="flex-1 flex items-center justify-center p-6">
+      <div
+        class="w-full max-w-6xl bg-zinc-800 rounded-2xl shadow-xl overflow-hidden"
+      >
+        <div class="px-6 py-4 border-b border-zinc-700">
+          <h2 class="text-2xl font-semibold text-green-400">Edit Your Image</h2>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6 p-6">
+          <!-- Form -->
+          <form method="POST" enctype="multipart/form-data" class="space-y-5">
+            <div>
+              <label class="block text-sm font-medium mb-1">Choose image</label>
+              <input
+                name="image"
+                type="file"
+                accept="image/*"
+                required
+                class="block w-full text-sm text-zinc-300 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-green-600 file:text-white hover:file:bg-green-700"
+              />
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium">Brightness</label>
+                <input
+                  name="brightness"
+                  type="number"
+                  min="-50"
+                  max="50"
+                  value="0"
+                  class="mt-1 block w-full rounded-md border border-zinc-600 bg-zinc-900 p-2"
+                />
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium">Contrast</label>
+                <input
+                  name="contrast"
+                  type="number"
+                  min="1"
+                  max="3"
+                  step="0.1"
+                  value="1"
+                  class="mt-1 block w-full rounded-md border border-zinc-600 bg-zinc-900 p-2"
+                />
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium">Grayscale</label>
+                <input
+                  name="grayscale"
+                  type="number"
+                  min="0"
+                  max="100"
+                  value="0"
+                  class="mt-1 block w-full rounded-md border border-zinc-600 bg-zinc-900 p-2"
+                />
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium">Rotate</label>
+                <select
+                  name="rotate"
+                  class="mt-1 block w-full rounded-md border border-zinc-600 bg-zinc-900 p-2"
+                >
+                  <option value="0">0°</option>
+                  <option value="90">90°</option>
+                  <option value="180">180°</option>
+                  <option value="270">270°</option>
+                </select>
+              </div>
+            </div>
+
+            <div
+              class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
+            >
+              <label class="inline-flex items-center gap-2 text-sm">
+                <input
+                  type="checkbox"
+                  name="flip"
+                  value="horizontal"
+                  class="h-4 w-4 text-green-600 rounded bg-zinc-800 border-zinc-600"
+                />
+                <span>Flip horizontally</span>
+              </label>
+
+              <button
+                type="submit"
+                name="edit"
+                value="1"
+                class="px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700"
+              >
+                Apply
+              </button>
+            </div>
+          </form>
+
+          <!-- Preview -->
+          <div
+            class="flex flex-col items-center justify-center bg-zinc-900 border border-zinc-700 rounded-xl p-6"
+          >
+            {% if original %}
+            <img
+              id="previewImage"
+              src="{{ original }}"
+              class="max-w-full max-h-[60vh] rounded-lg border-2 border-green-500 mb-4"
+            />
+            {% endif %} {% if edited %}
+            <a
+              id="downloadBtn"
+              href="{{ download_url }}"
+              download="edited_image.png"
+              class="px-4 py-2 mb-2 rounded-md bg-green-600 text-white hover:bg-green-700"
+            >
+              Download Edited
+            </a>
+
+            <button
+              id="toggleBtn"
+              type="button"
+              data-original="{{ original }}"
+              data-edited="{{ edited }}"
+              class="px-4 py-2 rounded-md bg-zinc-700 text-white hover:bg-zinc-600"
+            >
+              Show Original
+            </button>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer
+      class="text-center py-4 text-xs text-zinc-500 border-t border-zinc-700"
+    >
+      © 2025 Shushi. All rights reserved.
+    </footer>
+
+    <script>
+      const toggleBtn = document.getElementById("toggleBtn");
+      const previewImage = document.getElementById("previewImage");
+      const downloadBtn = document.getElementById("downloadBtn");
+
+      toggleBtn?.addEventListener("click", () => {
+        const original = toggleBtn.dataset.original;
+        const edited = toggleBtn.dataset.edited;
+
+        if (previewImage.src === edited) {
+          previewImage.src = original;
+          toggleBtn.textContent = "Show Edited";
+          downloadBtn?.classList.add("hidden");
+        } else {
+          previewImage.src = edited;
+          toggleBtn.textContent = "Show Original";
+          downloadBtn?.classList.remove("hidden");
+        }
+      });
+    </script>
+  </body>
+</html>
