@@ -1,178 +1,397 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Shushi | Edit Your Image</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shushi Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .animate-fade-in {
+        animation: fadeIn 0.5s ease-out;
+      }
+      .glass-effect {
+        background: rgba(24, 24, 27, 0.8);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      input[type="range"]::-webkit-slider-thumb {
+        appearance: none;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: #10b981;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      input[type="range"]::-webkit-slider-thumb:hover {
+        transform: scale(1.2);
+        background: #059669;
+      }
+    </style>
   </head>
-  <body class="bg-zinc-900 text-zinc-100 min-h-screen flex flex-col">
-    <!-- Navbar -->
-    <header
-      class="w-full border-b border-zinc-700 bg-zinc-800 px-6 py-4 flex items-center justify-between"
-    >
-      <h1 class="text-xl font-bold text-green-500">Shushi</h1>
-      <span class="text-sm text-zinc-400">Edit Your Image</span>
+  <body
+    class="bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 text-zinc-100 min-h-screen"
+  >
+    <!-- Header -->
+    <header class="border-b border-zinc-700/50 glass-effect sticky top-0 z-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div
+              class="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center"
+            >
+              <span class="text-xl font-bold text-white">S</span>
+            </div>
+            <div>
+              <h1
+                class="text-2xl font-bold bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent"
+              >
+                Shushi Pro
+              </h1>
+              <p class="text-xs text-zinc-400">Professional Image Editor</p>
+            </div>
+          </div>
+          <div class="text-sm text-zinc-400 hidden sm:block">
+            <span class="px-3 py-1 bg-zinc-800 rounded-full">v1.0</span>
+          </div>
+        </div>
+      </div>
     </header>
 
-    <!-- Main -->
-    <main class="flex-1 flex items-center justify-center p-6">
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {% if error %}
       <div
-        class="w-full max-w-6xl bg-zinc-800 rounded-2xl shadow-xl overflow-hidden"
+        class="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 animate-fade-in"
       >
-        <div class="px-6 py-4 border-b border-zinc-700">
-          <h2 class="text-2xl font-semibold text-green-400">Edit Your Image</h2>
+        <div class="flex items-center gap-2">
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            ></path>
+          </svg>
+          <span class="font-medium">{{ error }}</span>
         </div>
+      </div>
+      {% endif %}
 
-        <div class="grid md:grid-cols-2 gap-6 p-6">
-          <!-- Form -->
-          <form method="POST" enctype="multipart/form-data" class="space-y-5">
-            <div>
-              <label class="block text-sm font-medium mb-1">Choose image</label>
-              <input
-                name="image"
-                type="file"
-                accept="image/*"
-                required
-                class="block w-full text-sm text-zinc-300 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-green-600 file:text-white hover:file:bg-green-700"
-              />
-            </div>
+      <div class="grid lg:grid-cols-2 gap-8">
+        <!-- Controls Panel -->
+        <div class="space-y-6 animate-fade-in">
+          <div class="glass-effect rounded-2xl p-6 shadow-2xl">
+            <h2 class="text-xl font-semibold mb-6 flex items-center gap-2">
+              <svg
+                class="w-6 h-6 text-green-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
+                ></path>
+              </svg>
+              Edit Controls
+            </h2>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-sm font-medium">Brightness</label>
+            <form method="POST" enctype="multipart/form-data" class="space-y-6">
+              <!-- File Upload -->
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-zinc-300"
+                  >Upload Image</label
+                >
+                <div class="relative">
+                  <input
+                    name="image"
+                    type="file"
+                    accept="image/*"
+                    required
+                    class="block w-full text-sm text-zinc-300 file:mr-4 file:py-3 file:px-6 file:rounded-lg file:border-0 file:bg-gradient-to-r file:from-green-600 file:to-emerald-600 file:text-white file:font-medium hover:file:from-green-700 hover:file:to-emerald-700 file:transition-all file:cursor-pointer border border-zinc-600 rounded-lg bg-zinc-900 p-2"
+                  />
+                </div>
+                <p class="text-xs text-zinc-500">
+                  Supported: PNG, JPG, JPEG, WEBP, BMP (Max 16MB)
+                </p>
+              </div>
+
+              <div
+                class="h-px bg-gradient-to-r from-transparent via-zinc-700 to-transparent"
+              ></div>
+
+              <!-- Brightness -->
+              <div class="space-y-2">
+                <div class="flex justify-between items-center">
+                  <label class="text-sm font-medium text-zinc-300"
+                    >Brightness</label
+                  >
+                  <span
+                    id="brightness-value"
+                    class="text-sm text-green-400 font-mono"
+                    >0</span
+                  >
+                </div>
                 <input
                   name="brightness"
-                  type="number"
+                  type="range"
                   min="-50"
                   max="50"
                   value="0"
-                  class="mt-1 block w-full rounded-md border border-zinc-600 bg-zinc-900 p-2"
+                  class="w-full h-2 bg-zinc-700 rounded-lg appearance-none cursor-pointer"
+                  oninput="document.getElementById('brightness-value').textContent = this.value"
                 />
               </div>
 
-              <div>
-                <label class="block text-sm font-medium">Contrast</label>
+              <!-- Contrast -->
+              <div class="space-y-2">
+                <div class="flex justify-between items-center">
+                  <label class="text-sm font-medium text-zinc-300"
+                    >Contrast</label
+                  >
+                  <span
+                    id="contrast-value"
+                    class="text-sm text-green-400 font-mono"
+                    >1.0</span
+                  >
+                </div>
                 <input
                   name="contrast"
-                  type="number"
-                  min="1"
+                  type="range"
+                  min="0.5"
                   max="3"
                   step="0.1"
                   value="1"
-                  class="mt-1 block w-full rounded-md border border-zinc-600 bg-zinc-900 p-2"
+                  class="w-full h-2 bg-zinc-700 rounded-lg appearance-none cursor-pointer"
+                  oninput="document.getElementById('contrast-value').textContent = parseFloat(this.value).toFixed(1)"
                 />
               </div>
 
-              <div>
-                <label class="block text-sm font-medium">Grayscale</label>
+              <!-- Grayscale -->
+              <div class="space-y-2">
+                <div class="flex justify-between items-center">
+                  <label class="text-sm font-medium text-zinc-300"
+                    >Grayscale</label
+                  >
+                  <span
+                    id="grayscale-value"
+                    class="text-sm text-green-400 font-mono"
+                    >0%</span
+                  >
+                </div>
                 <input
                   name="grayscale"
-                  type="number"
+                  type="range"
                   min="0"
                   max="100"
                   value="0"
-                  class="mt-1 block w-full rounded-md border border-zinc-600 bg-zinc-900 p-2"
+                  class="w-full h-2 bg-zinc-700 rounded-lg appearance-none cursor-pointer"
+                  oninput="document.getElementById('grayscale-value').textContent = this.value + '%'"
                 />
               </div>
 
-              <div>
-                <label class="block text-sm font-medium">Rotate</label>
-                <select
-                  name="rotate"
-                  class="mt-1 block w-full rounded-md border border-zinc-600 bg-zinc-900 p-2"
-                >
-                  <option value="0">0°</option>
-                  <option value="90">90°</option>
-                  <option value="180">180°</option>
-                  <option value="270">270°</option>
-                </select>
+              <div
+                class="h-px bg-gradient-to-r from-transparent via-zinc-700 to-transparent"
+              ></div>
+
+              <!-- Rotate & Flip -->
+              <div class="grid grid-cols-2 gap-4">
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-zinc-300"
+                    >Rotate</label
+                  >
+                  <select
+                    name="rotate"
+                    class="w-full rounded-lg border border-zinc-600 bg-zinc-900 p-3 text-zinc-300 focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
+                  >
+                    <option value="0">0°</option>
+                    <option value="90">90°</option>
+                    <option value="180">180°</option>
+                    <option value="270">270°</option>
+                  </select>
+                </div>
+
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-zinc-300"
+                    >Flip</label
+                  >
+                  <label
+                    class="flex items-center justify-center h-12 rounded-lg border border-zinc-600 bg-zinc-900 cursor-pointer hover:bg-zinc-800 transition"
+                  >
+                    <input
+                      type="checkbox"
+                      name="flip"
+                      value="horizontal"
+                      class="w-5 h-5 text-green-600 rounded focus:ring-2 focus:ring-green-500 bg-zinc-800 border-zinc-600"
+                    />
+                    <span class="ml-2 text-sm">Horizontal</span>
+                  </label>
+                </div>
               </div>
-            </div>
+
+              <!-- Action Buttons -->
+              <div class="flex gap-3 pt-4">
+                <button
+                  type="submit"
+                  name="edit"
+                  value="1"
+                  class="flex-1 py-3 px-6 rounded-lg bg-gradient-to-r from-green-600 to-emerald-600 text-white font-medium hover:from-green-700 hover:to-emerald-700 focus:ring-4 focus:ring-green-500/50 transition-all transform hover:scale-105 shadow-lg"
+                >
+                  Apply Filters
+                </button>
+                <button
+                  type="reset"
+                  class="px-6 py-3 rounded-lg border border-zinc-600 text-zinc-300 hover:bg-zinc-800 transition"
+                >
+                  Reset
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Preview Panel -->
+        <div class="space-y-6 animate-fade-in">
+          <div class="glass-effect rounded-2xl p-6 shadow-2xl min-h-[500px]">
+            <h2 class="text-xl font-semibold mb-6 flex items-center gap-2">
+              <svg
+                class="w-6 h-6 text-green-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                ></path>
+              </svg>
+              Image Preview
+            </h2>
 
             <div
-              class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
+              class="relative bg-zinc-900 border-2 border-dashed border-zinc-700 rounded-xl overflow-hidden min-h-[400px] flex items-center justify-center"
             >
-              <label class="inline-flex items-center gap-2 text-sm">
-                <input
-                  type="checkbox"
-                  name="flip"
-                  value="horizontal"
-                  class="h-4 w-4 text-green-600 rounded bg-zinc-800 border-zinc-600"
-                />
-                <span>Flip horizontally</span>
-              </label>
+              {% if original %}
+              <img
+                id="previewImage"
+                src="{{ edited or original }}"
+                alt="Preview"
+                class="max-w-full max-h-[500px] rounded-lg object-contain"
+              />
+              {% else %}
+              <div class="text-center text-zinc-500">
+                <svg
+                  class="w-24 h-24 mx-auto mb-4 opacity-50"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  ></path>
+                </svg>
+                <p class="text-lg font-medium">No image uploaded</p>
+                <p class="text-sm mt-1">Upload an image to get started</p>
+              </div>
+              {% endif %}
+            </div>
 
-              <button
-                type="submit"
-                name="edit"
-                value="1"
-                class="px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700"
+            {% if edited %}
+            <div class="flex gap-3 mt-6">
+              <a
+                href="{{ download_url }}"
+                download="edited_image.png"
+                class="flex-1 text-center py-3 px-6 rounded-lg bg-gradient-to-r from-green-600 to-emerald-600 text-white font-medium hover:from-green-700 hover:to-emerald-700 transition-all transform hover:scale-105 shadow-lg"
               >
-                Apply
+                <span class="flex items-center justify-center gap-2">
+                  <svg
+                    class="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                    ></path>
+                  </svg>
+                  Download
+                </span>
+              </a>
+              <button
+                id="toggleBtn"
+                type="button"
+                data-original="{{ original }}"
+                data-edited="{{ edited }}"
+                class="px-6 py-3 rounded-lg border border-zinc-600 text-zinc-300 hover:bg-zinc-800 transition"
+              >
+                Show Original
               </button>
             </div>
-          </form>
-
-          <!-- Preview -->
-          <div
-            class="flex flex-col items-center justify-center bg-zinc-900 border border-zinc-700 rounded-xl p-6"
-          >
-            {% if original %}
-            <img
-              id="previewImage"
-              src="{{ original }}"
-              class="max-w-full max-h-[60vh] rounded-lg border-2 border-green-500 mb-4"
-            />
-            {% endif %} {% if edited %}
-            <a
-              id="downloadBtn"
-              href="{{ download_url }}"
-              download="edited_image.png"
-              class="px-4 py-2 mb-2 rounded-md bg-green-600 text-white hover:bg-green-700"
-            >
-              Download Edited
-            </a>
-
-            <button
-              id="toggleBtn"
-              type="button"
-              data-original="{{ original }}"
-              data-edited="{{ edited }}"
-              class="px-4 py-2 rounded-md bg-zinc-700 text-white hover:bg-zinc-600"
-            >
-              Show Original
-            </button>
             {% endif %}
           </div>
         </div>
       </div>
     </main>
 
-    <footer
-      class="text-center py-4 text-xs text-zinc-500 border-t border-zinc-700"
-    >
-      © 2025 Shushi. All rights reserved.
+    <!-- Footer -->
+    <footer class="border-t border-zinc-700/50 mt-12 py-6">
+      <div
+        class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm text-zinc-500"
+      >
+        <p>© 2025 Shushi Pro - Professional Image Editor</p>
+      </div>
     </footer>
 
     <script>
       const toggleBtn = document.getElementById("toggleBtn");
       const previewImage = document.getElementById("previewImage");
-      const downloadBtn = document.getElementById("downloadBtn");
 
-      toggleBtn?.addEventListener("click", () => {
-        const original = toggleBtn.dataset.original;
-        const edited = toggleBtn.dataset.edited;
+      if (toggleBtn && previewImage) {
+        toggleBtn.addEventListener("click", () => {
+          const original = toggleBtn.dataset.original;
+          const edited = toggleBtn.dataset.edited;
 
-        if (previewImage.src === edited) {
-          previewImage.src = original;
-          toggleBtn.textContent = "Show Edited";
-          downloadBtn?.classList.add("hidden");
-        } else {
-          previewImage.src = edited;
-          toggleBtn.textContent = "Show Original";
-          downloadBtn?.classList.remove("hidden");
-        }
+          if (previewImage.src.includes("edited_")) {
+            previewImage.src = original;
+            toggleBtn.textContent = "Show Edited";
+          } else {
+            previewImage.src = edited;
+            toggleBtn.textContent = "Show Original";
+          }
+        });
+      }
+
+      // Add smooth fade-in animation on page load
+      window.addEventListener("load", () => {
+        document.querySelectorAll(".animate-fade-in").forEach((el, i) => {
+          el.style.animationDelay = `${i * 0.1}s`;
+        });
       });
     </script>
   </body>
